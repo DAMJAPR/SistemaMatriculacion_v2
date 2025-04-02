@@ -267,9 +267,4 @@ public class Modelo {
         return coleccionMatriculas.get(cursoAcademico);
     }
 
-    // Modelo.8.
-    /*
-    Realiza un commit.
-     */
-
 }
