@@ -5,7 +5,7 @@ import org.iesalandalus.programacion.matriculacion.modelo.dominio.Alumno;
 import org.iesalandalus.programacion.matriculacion.modelo.dominio.Asignatura;
 import org.iesalandalus.programacion.matriculacion.modelo.dominio.CicloFormativo;
 import org.iesalandalus.programacion.matriculacion.modelo.dominio.Matricula;
-
+import org.iesalandalus.programacion.matriculacion.vista.Vista;
 import javax.naming.OperationNotSupportedException;
 
 /**
@@ -39,16 +39,16 @@ public class Controlador {
      Métodos comenzar() y terminar()
      Que llaman a los correspondientes métodos en las clases Modelo y Vista
      */
-    public static void comenzar()
+    public void comenzar()
     {
         Modelo.comenzar();
-        Vista.comenzar();
+        vista.comenzar();
     }
 
-    public static void terminar()
+    public void terminar()
     {
         Modelo.terminar();
-        Vista.terminar();
+        vista.terminar();
     }
 
     // Controlador.5.
@@ -58,104 +58,104 @@ public class Controlador {
      */
 
     // Métodos para realizar operaciones con Alumnos:
-    public static void insertarAlumno(Alumno alumno)
+    public void insertarAlumno(Alumno alumno)
     {
         Modelo.insertarAlumno(alumno);
     }
 
-    public static Alumno buscarAlumno (Alumno alumno)
+    public Alumno buscarAlumno (Alumno alumno)
     {
         return Modelo.buscarAlumno(alumno);
     }
 
-    public static void borrarAlumno (Alumno alumno)
+    public void borrarAlumno (Alumno alumno)
             throws OperationNotSupportedException
     {
         Modelo.borrarAlumno(alumno);
     }
 
-    public static Alumno[] getAlumnos()
+    public Alumno[] getAlumnos()
     {
         return Modelo.getAlumnos();
     }
 
     // Métodos para hacer operaciones con Asignaturas:
-    public static void insertarAsignatura(Asignatura asignatura)
+    public void insertarAsignatura(Asignatura asignatura)
     {
         Modelo.insertarAsignatura(asignatura);
     }
 
-    public static Asignatura buscarAsignatura (Asignatura asignatura)
+    public Asignatura buscarAsignatura (Asignatura asignatura)
     {
         return Modelo.buscarAsignatura(asignatura);
     }
 
-    public static void borrarAsignatura (Asignatura asignatura)
+    public void borrarAsignatura (Asignatura asignatura)
             throws OperationNotSupportedException
     {
         Modelo.borrarAsignatura(asignatura);
     }
 
-    public static Asignatura[] getAsignaturas()
+    public Asignatura[] getAsignaturas()
     {
         return Modelo.getAsignaturas();
     }
 
     // Métodos para hacer operaciones con Ciclos Formativos:
-    public static void insertarCiclo(CicloFormativo cicloFormativo)
+    public void insertarCiclo(CicloFormativo cicloFormativo)
     {
         Modelo.insertarCicloFormativo(cicloFormativo);
     }
 
-    public static CicloFormativo buscarCiclo (CicloFormativo cicloFormativo)
+    public CicloFormativo buscarCiclo (CicloFormativo cicloFormativo)
     {
         return Modelo.buscarCicloFormativo(cicloFormativo);
     }
 
-    public static void borrarCiclo (CicloFormativo cicloFormativo)
+    public void borrarCiclo (CicloFormativo cicloFormativo)
             throws OperationNotSupportedException
     {
         Modelo.borrarCicloFormativo(cicloFormativo);
     }
 
-    public static CicloFormativo[] getCiclos()
+    public CicloFormativo[] getCiclos()
     {
         return Modelo.getCiclos();
     }
 
     // Métodos para hacer operaciones con Matriculas:
-    public static void insertarMatricula(Matricula matricula)
+    public void insertarMatricula(Matricula matricula)
     {
         Modelo.insertarMatricula(matricula);
     }
 
-    public static Matricula buscarMatricula (Matricula matricula)
+    public Matricula buscarMatricula (Matricula matricula)
     {
         return Modelo.buscarMatricula(matricula);
     }
 
-    public static void borrarMatricula (Matricula matricula)
+    public void borrarMatricula (Matricula matricula)
             throws OperationNotSupportedException
     {
         Modelo.borrarMatricula(matricula);
     }
 
-    public static Matricula[] getMatriculas()
+    public Matricula[] getMatriculas()
     {
         return Modelo.getMatriculas();
     }
 
-    public static Matricula[] getMatriculas (Alumno alumno)
+    public Matricula[] getMatriculas (Alumno alumno)
     {
         return Modelo.getMatriculas(alumno);
     }
 
-    public static Matricula[] getMatriculas (CicloFormativo cicloFormativo)
+    public Matricula[] getMatriculas (CicloFormativo cicloFormativo)
     {
         return Modelo.getMatriculas(cicloFormativo);
     }
 
-    public static Matricula[] getMatriculas (String cursoAcademico)
+    public Matricula[] getMatriculas (String cursoAcademico)
     {
         return Modelo.getMatriculas(cursoAcademico);
     }

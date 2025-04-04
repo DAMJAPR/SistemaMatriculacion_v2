@@ -64,10 +64,6 @@ public class Modelo {
         boolean insercionCorrecta = false;
         while (!insercionCorrecta) {
             try {
-                /*
-                System.out.println("Introduce los datos del Alumno a insertar: ");
-                Alumno a = Consola.leerAlumno();
-                 */
                 coleccionAlumnos.insertarAlumno(alumno);
                 insercionCorrecta = true;
             } catch (NullPointerException | IllegalArgumentException | OperationNotSupportedException e) {
@@ -129,7 +125,6 @@ public class Modelo {
      */
     public static Alumno buscarAlumno(Alumno alumno) {
         try {
-            // Alumno alumno = Consola.getAlumnoPorDni();
             Alumno buscado = coleccionAlumnos.buscar(alumno);
             if (buscado != null) {
                 System.out.println("Alumno encontrado: ");
@@ -198,7 +193,6 @@ public class Modelo {
      */
     public static void borrarAlumno(Alumno alumno) throws OperationNotSupportedException {
         try {
-            Alumno alumno = Consola.getAlumnoPorDni();
             coleccionAlumnos.borrar(alumno);
         } catch (Exception e) {
             System.out.println("ERROR: excepción capturada.\n" + e.getMessage());
