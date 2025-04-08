@@ -41,7 +41,7 @@ public class Asignaturas {
         Asignatura[] copiaAsignaturas = new Asignatura[tamano];
 
         // Recorremos el array original y copiamos cada objeto
-        for (int i = 0; i < tamano - 1; i++){
+        for (int i = 0; i < tamano; i++){
             copiaAsignaturas[i] = new Asignatura(asignaturas[i]); // Usamos el constructor copia
         }
         return copiaAsignaturas;
@@ -96,7 +96,7 @@ public class Asignaturas {
     private int buscarIndice(Asignatura asignatura){
         for(int i = 0; i < tamano; i++){
             if (this.asignaturas[i] != null && this.asignaturas[i].equals(asignatura)) {
-                return i; // Si se encuentra al mismo Alumno, devolverá la posición
+                return i; // Si se encuentra la misma Asignatura, devolverá la posición
             }
         }
         return -1;

@@ -75,7 +75,7 @@ public class CiclosFormativos {
     // Método para buscar un ciclo formativo con un índice
     public CicloFormativo buscar(CicloFormativo cicloFormativo){
         int indice = buscarIndice(cicloFormativo);
-        // Si encuentra el ciclo formativo devuelve una copia, en caso contrario devuelve null
+        // Si encuentra el CicloFormativo devuelve una copia, en caso contrario devuelve null
         return (indice != -1) ? new CicloFormativo(ciclosFormativos[indice]) : null;
     }
 
@@ -83,10 +83,10 @@ public class CiclosFormativos {
     private int buscarIndice(CicloFormativo cicloFormativo) {
         for (int i = 0; i < tamano; i++) {
             if (this.ciclosFormativos[i] != null && this.ciclosFormativos[i].equals(cicloFormativo)) {
-                return i; // Si se encuentra al mismo Alumno, devolverá la posición
+                return i; // Si se encuentra al mismo CicloFormativo, devolverá la posición
             }
         }
-        return -1; // Si no se encuentra el Alumno devolverá -1
+        return -1; // Si no se encuentra el CicloFormativo devolverá -1
     }
 
     //  Apartado 9.1.v.

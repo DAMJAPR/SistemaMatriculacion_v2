@@ -8,9 +8,7 @@ import java.util.regex.Pattern;
  *
  * @author José Antonio Padilla Ramallo
  * <p>
- * Clase Asignatura, capaz de instanciar objetos de su mismo tipo que además contiene como atributos privados una
- * instancia de la clase CicloFormativo y de los Enumerados Curso, EspecialdiadProfesorado, tambien puede comprobar
- * que sus atributos miembro sean los adecuados a través de distintas comprobaciones que realizan sus métodos.
+ * Clase Asignatura para crear objetos de tipo Asignatura.
  * </p>
  */
 // Apartado 6.1.
@@ -21,7 +19,7 @@ public class Asignatura {
     public final int MAX_NUM_HORAS_DESDOBLES = 6;
     private static final String ER_CODIGO = "[A-Za-z0-9]{4}";
     // Objeto de tipo Pattern para almacenar la regex del código
-    Pattern pattern_Codigo = Pattern.compile(ER_CODIGO);
+    private static final Pattern PATRON_CODIGO = Pattern.compile(ER_CODIGO);
     private String codigo;
     private String nombre;
     private int horasAnuales;
@@ -72,12 +70,12 @@ public class Asignatura {
             throw new IllegalArgumentException
                     ("ERROR: el código no puede estar vacío o contener sólo espacios en blanco.");
         }
-        Matcher matcher = pattern_Codigo.matcher(codigo);
+        Matcher matcher = PATRON_CODIGO.matcher(codigo);
         if (matcher.matches()){
             this.codigo = codigo;
         } else {
             throw new IllegalArgumentException
-                    ("ERROR: el código debe tener exactamente cuatro dígitos.");
+                    ("ERROR: el formato del código introducido no coincide con el esperado.");
         }
     }
 
@@ -103,9 +101,10 @@ public class Asignatura {
     }
     // Método SET para las horas anuales
     public void setHorasAnuales(int horasAnuales) {
-        if (horasAnuales <= 0 || horasAnuales > MAX_NUM_HORAS_ANUALES){
+        if (horasAnuales <= 0 || horasAnuales > getMAX_NUM_HORAS_ANUALES()){
             throw new IllegalArgumentException
-                    ("ERROR: el número de horas anuales no puede ser menor o igual a 0 o superar el límite máximo permitido.");
+                    ("ERROR: el número de horas anuales no puede ser menor o igual a 0 o superar " +
+                            "el límite máximo permitido " + getMAX_NUM_HORAS_ANUALES() + " horas.");
         }
         this.horasAnuales = horasAnuales;
     }
@@ -129,9 +128,10 @@ public class Asignatura {
     }
     // Método SET para las horas de desdoble
     public void setHorasDesdoble(int horasDesdoble) {
-        if (horasDesdoble > MAX_NUM_HORAS_DESDOBLES || horasDesdoble < 0){
+        if (horasDesdoble > getMAX_NUM_HORAS_DESDOBLES() || horasDesdoble < 0){
             throw new IllegalArgumentException
-                    ("ERROR: las horas de desdoble no pueden ser negativas o superiores a " + getHorasDesdoble());
+                    ("ERROR: las horas de desdoble no pueden ser negativas o superiores a: " +
+                            getMAX_NUM_HORAS_DESDOBLES() + " horas.");
         }
         this.horasDesdoble = horasDesdoble;
     }
@@ -156,13 +156,13 @@ public class Asignatura {
     }
     // Método Constructor con parámetros
     public Asignatura (String codigo, String nombre, int horasAnuales, Curso curso, int horasDesdoble,
-                       EspecialidadProfesorado espcialidadProfesorado, CicloFormativo cicloFormativo){
+                       EspecialidadProfesorado especialidadProfesorado, CicloFormativo cicloFormativo){
         setCodigo(codigo);
         setNombre(nombre);
         setHorasAnuales(horasAnuales);
         setCurso(curso);
         setHorasDesdoble(horasDesdoble);
-        setEspecialidadProfesorado(espcialidadProfesorado);
+        setEspecialidadProfesorado(especialidadProfesorado);
         setCicloFormativo(cicloFormativo);
     }
 
@@ -201,15 +201,33 @@ public class Asignatura {
     // Método imprimir
     public String imprimir (){
         return String.format("Código de Asignatura: %s, %nNombre de Asignatura: %s, %nCiclo Formativo: %s",
-                codigo, nombre, cicloFormativo);
+                codigo,
+                nombre,
+                cicloFormativo);
     }
 
     // Apartado 6.7.
     // Método toString()
     @Override
     public String toString() {
-        return String.format("Código: %s, %nNombre: %s, %nHoras Anuales: %s, %nCurso: %s," +
-                "%nHoras Desdoble: %d, %nCiclo Formativo: %s, %nEspecialidad Profesorado: %s",
-                codigo, nombre, horasAnuales, curso, horasDesdoble, cicloFormativo, especialidadProfesorado);
+        return String.format("""
+                Asignatura ->
+                {
+                · Código: %s,
+                · Nombre: %s,
+                · Horas Anuales: %s,
+                · Curso: %s,
+                · Horas Desdoble: %d,
+                · Especialidad Profesorado: %s,
+                · %s
+                """,
+                codigo,
+                nombre,
+                horasAnuales,
+                curso,
+                horasDesdoble,
+                especialidadProfesorado,
+                cicloFormativo
+                );
     }
 }

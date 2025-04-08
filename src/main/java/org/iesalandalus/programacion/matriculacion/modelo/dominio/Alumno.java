@@ -11,8 +11,7 @@ import java.util.regex.Pattern;
  *
  * @author José Antonio Padilla Ramallo
  * <p>
- * Clase Alumno, capaz de instanciar objetos de su mismo tipo y comprobar que sus atributos miembro
- * sean los adecuados a través de distintas comprobaciones que realizan sus métodos.
+ * Clase Alumno para crear objetos de tipo Alumno.
  * </p>
  */
 
@@ -36,7 +35,7 @@ public class Alumno {
     public static final String FORMATO_FECHA = "dd/MM/yyyy";
 
     // RegEx para comprobar la validez del atributo de instancia nia
-    private static final String ER_NIA = "^[a-z]{4}[0-9]{3}$";
+    private static final String ER_NIA = "^[a-z]{1,4}[0-9]{3}$";
 
     // Apartado 1.7.
     // Atributo de clase que establece la edad mínima que un alumno debe tener para que pueda matricularse
@@ -52,12 +51,12 @@ public class Alumno {
     private String nia;
 
     // Atributo de clase para poder comprobar las letras válidas de un DNI español
-    private static final String letrasDni = "TRWAGMYFPDXBNJZSQVHLCKE";
+    private static final String LETRAS_DNI = "TRWAGMYFPDXBNJZSQVHLCKE";
 
     /**
      *
      * @param nombre Argumento pasado por el usuario de tipo String para que sea formateado.
-     * @return El argumento pasado por parámetro con el formato adecuado, es decir, sin espacios al princpio ni al
+     * @return El argumento pasado por parámetro con el formato adecuado, es decir, sin espacios al principio ni al
      * final, con sus primeras letras en mayúsculas y el resto en minúsculas.
      * @throws NullPointerException Si se introduce un nombre nulo.
      * @throws IllegalArgumentException Si se introduce un nombre vacío o sólo con espacios en blanco.
@@ -113,10 +112,10 @@ public class Alumno {
     {
         if (dni == null){
             throw new NullPointerException
-                    ("ERROR: el nombre no puede ser nulo.");
+                    ("ERROR: el DNI no puede ser nulo.");
         } else if (dni.isBlank()){
             throw new IllegalArgumentException
-                    ("ERROR: el nombre no puede estar vacío o contener sólo espacios en blanco.");
+                    ("ERROR: el DNI no puede estar vacío o contener sólo espacios en blanco.");
         }
         // Compilamos la expresión regular
         Pattern pattern = Pattern.compile(ER_DNI);
@@ -131,7 +130,7 @@ public class Alumno {
             String letra = matcher.group(2).toUpperCase();
 
             int numeroDni = Integer.parseInt(numeros);
-            char letraEsperada = letrasDni.charAt(numeroDni % 23);
+            char letraEsperada = LETRAS_DNI.charAt(numeroDni % 23);
             // Comparamos la letra proporcionada con la esperada
             return letra.charAt(0) == letraEsperada;
         }
@@ -155,7 +154,7 @@ public class Alumno {
      * @param nombre Argumento pasado por el usuario de tipo String para establecer el atributo nombre de la instancia.
      *               Hechas las comprobaciones pertinentes, formateará el nombre y lo seteara.
      * @throws NullPointerException Si el nombre pasado como parámetro es nulo.
-     * @throws IllegalArgumentException Si el nombre pasado como parámetro está vacío o sólo contiene espacios en blanco.
+     * @throws IllegalArgumentException Si el nombre pasado como parámetro está vacío o sólo tiene espacios en blanco.
      */
     // Método SET para el nombre
     public void setNombre(String nombre)
@@ -181,11 +180,11 @@ public class Alumno {
     public String getNia() {
         return nia;
     }
-    // Método SET para el NIA
+    // Método SET para el NIA sin parámetros
     private void setNia() {
         String iniciales = getIniciales();
         String ultimosDigitosDNI = getDni().substring(5,8);
-        nia = iniciales+ultimosDigitosDNI;
+        nia = iniciales.concat(ultimosDigitosDNI);
     }
 
     /**
@@ -203,7 +202,7 @@ public class Alumno {
         }
         if (nia.isBlank()){
             throw new IllegalArgumentException
-                    ("ERROR: el NIA puede estar vacío o contener sólo espacios.");
+                    ("ERROR: el NIA no puede estar vacío o contener sólo espacios.");
         }
         if (nia.matches(ER_NIA)){
             this.nia = nia;
@@ -211,7 +210,6 @@ public class Alumno {
             throw new IllegalArgumentException
                     ("ERROR: el formato del NIA no es válido.");
         }
-
     }
 
     /**
@@ -237,7 +235,7 @@ public class Alumno {
 
         if (dni == null){
             throw new NullPointerException
-                    ("ERROR: el nombre DNI no puede ser nulo.");
+                    ("ERROR: el DNI no puede ser nulo.");
         }
         if (dni.isBlank()){
             throw new IllegalArgumentException
@@ -311,7 +309,7 @@ public class Alumno {
         }
         if (correo.isBlank()){
             throw new IllegalArgumentException
-                    ("ERROR: el correo no puede estar vacío o contener sólo espoacios en blanco.");
+                    ("ERROR: el correo no puede estar vacío o contener sólo espacios en blanco.");
         }
         if (!correo.matches(ER_CORREO)){
             throw new IllegalArgumentException
@@ -360,11 +358,10 @@ public class Alumno {
     // Método para obtener las iniciales del nombre del alumno
     private String getIniciales()
             throws NullPointerException, IllegalArgumentException{
-        nombre = getNombre();
-        if (nombre == null){
-            throw new NullPointerException
-                    ("ERROR: No se puede obtener las iniciales de un nombre nulo.");
-        } else if (nombre.isBlank()){
+        nombre = getNombre().trim();
+        if (nombre == null) throw new NullPointerException
+                ("ERROR: No se puede obtener las iniciales de un nombre nulo.");
+        else if (nombre.isBlank()){
             throw new IllegalArgumentException
                     ("ERROR: No se puede obtener las iniciales de un nombre vacío o " +
                             "que contiene sólo espacios en blanco.");
@@ -407,6 +404,7 @@ public class Alumno {
         setCorreo(correo);
         setTelefono(telefono);
         setFechaNacimiento(fechaNacimiento);
+        setNia();
     }
 
     /**
@@ -428,6 +426,7 @@ public class Alumno {
         this.correo = otroAlumno.getCorreo();
         this.telefono = otroAlumno.getTelefono();
         this.fechaNacimiento = otroAlumno.getFechaNacimiento();
+        setNia(otroAlumno.getNia());
     }
 
     /**
@@ -463,20 +462,25 @@ public class Alumno {
         return String.format("NIA: %s, %nNombre: %s, %nDNI: %s, " +
                 "%nCorreo: %s, %nTeléfono: %s, " + "%nFecha de Nacimiento: %s",
                 getNia(), getNombre(), getDni(),
-                getCorreo(), getTelefono(), getFechaNacimiento());
+                getCorreo(), getTelefono(),
+                getFechaNacimiento().format(DateTimeFormatter.ofPattern(FORMATO_FECHA)));
     }
 
     // Apartado 1.12.
     // Método toString
     @Override
     public String toString() {
-        return String.format("""
-                        Alumno { Nombre: %s
-                        Teléfono: %s
-                        Correo: %s
-                        DNI: %s
-                        Fecha de Nacimiento: %s
-                        NIA: %s }""",
+        return String.format
+                ("""
+                        Alumno ->
+                        {
+                        · Nombre: %s,
+                        · Teléfono: %s,
+                        · Correo: %s,
+                        · DNI: %s,
+                        · Fecha de Nacimiento: %s,
+                        · NIA: %s
+                        }""",
                 this.nombre,
                 this.telefono,
                 this.correo,
@@ -485,5 +489,4 @@ public class Alumno {
                 this.nia
         );
     }
-
 }

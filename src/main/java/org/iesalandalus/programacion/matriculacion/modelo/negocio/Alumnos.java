@@ -63,7 +63,7 @@ public class Alumnos {
             throw new NullPointerException
                     ("ERROR: no se pueden insertar alumnos nulos.");
         }
-        if (capacidadSuperada(tamano)){
+        if (capacidadSuperada(getTamano())){
             throw new OperationNotSupportedException
                     ("ERROR: no se aceptan más alumnos.");
         }
@@ -109,6 +109,7 @@ public class Alumnos {
         }
         desplazarUnaPosicionHaciaIzquierda(indice);
         tamano--;
+        System.out.println("Alumno borrado correctamente.");
     }
 
     // Método para desplazar una posición hacia la izquierda

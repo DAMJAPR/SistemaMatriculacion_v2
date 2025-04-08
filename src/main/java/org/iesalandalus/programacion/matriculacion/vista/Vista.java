@@ -2,6 +2,7 @@ package org.iesalandalus.programacion.matriculacion.vista;
 
 import org.iesalandalus.programacion.matriculacion.controlador.Controlador;
 import org.iesalandalus.programacion.matriculacion.modelo.dominio.*;
+import org.iesalandalus.programacion.utilidades.Entrada;
 
 import javax.naming.OperationNotSupportedException;
 
@@ -24,22 +25,34 @@ public class Vista {
             throw new NullPointerException("ERROR: el controlador es nulo.");
         }
         this.controlador = controlador;
+
+    }
+
+    /*
+     No sé si será un fallo del enunciado o un error de interpretación mío del mismo o del diagrama de clase, pero:
+     · A la hora de usar el método setControlador() me he visto "forzado" a crear un método auxiliar
+     que me permita acceder al mismo desde una instancia situada en la clase Controlador ya que este
+     método tiene el modificador de acceso private, no puedo acceder a él de otra forma sin cambiar su modificador
+     */
+    public void iniciarControlador(Controlador controlador){
+        setControlador(controlador);
     }
 
     // Vista.5.
     // Método comenzar() que mostrará el menú, leerá una opción de consola y la ejecutará.
     public void comenzar(){
         Opcion opcionSeleccionada = null; // Variable para almacenar la opción elegida
-
+        boolean entradaCorrecta = false;
         do {
             try {
                 Consola.mostrarMenu();
                 opcionSeleccionada = Consola.elegirOpcion();
                 ejecutarOpcion(opcionSeleccionada);
+                entradaCorrecta = true;
             } catch (Exception e) {
                 System.out.println("ERROR: Excepción capturada.\n" + e.getMessage());
             }
-        } while (opcionSeleccionada != Opcion.SALIR);
+        } while (opcionSeleccionada != Opcion.SALIR || !entradaCorrecta);
     }
 
     // Método terminar() que muestra un mensaje de despedida por consola.
@@ -53,8 +66,7 @@ public class Vista {
     private void ejecutarOpcion(Opcion opcion){
         try {
             switch (opcion) {
-                case SALIR -> System.out.println("|| ¡Gracias por utilizar el Sistema de Matriculación! ||\n" +
-                        "||-- ...Saliendo de la aplicación... --||");
+                case SALIR -> controlador.terminar();
                 case INSERTAR_ALUMNO -> insertarAlumno();
                 case BUSCAR_ALUMNO -> buscarAlumno();
                 case BORRAR_ALUMNO -> borrarAlumno();
@@ -92,7 +104,7 @@ public class Vista {
     // Método para buscar un alumno
     private void buscarAlumno() throws OperationNotSupportedException {
         Alumno alumno = Consola.getAlumnoPorDni();
-        controlador.buscarAlumno(alumno);
+        System.out.println(controlador.buscarAlumno(alumno));
     }
 
     // Método para borrar un alumno
@@ -103,11 +115,11 @@ public class Vista {
 
     // Método para mostrar todos los alumnos registrados
     private void mostrarAlumnos(){
-        Alumno[] alumnos = controlador.getAlumnos();;
+        Alumno[] alumnos = controlador.getAlumnos();
         if (alumnos.length > 0) {
             int contador = 1;
             for (Alumno a : alumnos) {
-                System.out.printf("%d.- %s" , contador, a);
+                System.out.printf("[%d.-] %s" , contador, a);
                 contador++;
             }
         } else {
@@ -118,6 +130,7 @@ public class Vista {
     // Insertar Asignatura
     private void insertarAsignatura() throws OperationNotSupportedException {
         CicloFormativo cicloFormativo = Consola.leerCicloFormativo();
+        controlador.insertarCiclo(cicloFormativo);
         Asignatura asignatura = Consola.leerAsignatura(cicloFormativo);
         controlador.insertarAsignatura(asignatura);
     }
@@ -125,7 +138,7 @@ public class Vista {
     // Buscar Asignatura
     private void buscarAsignatura() throws OperationNotSupportedException {
         Asignatura asignatura = Consola.getAsignaturaPorCodigo();
-        controlador.buscarAsignatura(asignatura);
+        System.out.println(controlador.buscarAsignatura(asignatura));
     }
 
     // Borrar Asignatura
@@ -140,7 +153,7 @@ public class Vista {
         if (asignaturas.length > 0) {
             int contador = 1;
             for (Asignatura a : asignaturas) {
-                System.out.printf("%d.- %s" , contador, a);
+                System.out.printf("[%d.-] %s" , contador, a);
                 contador++;
             }
         } else {
@@ -157,7 +170,7 @@ public class Vista {
     // Buscar CicloFormativo
     private void buscarCicloFormativo() throws OperationNotSupportedException {
         CicloFormativo cicloFormativo = Consola.getCicloFormativoPorCodigo();
-        controlador.buscarCiclo(cicloFormativo);
+        System.out.println(controlador.buscarCiclo(cicloFormativo));
     }
 
     // Borrar CicloFormativo
@@ -169,42 +182,83 @@ public class Vista {
     // Método para mostrar los Ciclos Formativos
     private void mostrarCiclosFormativos() {
         CicloFormativo[] ciclosFormativos = controlador.getCiclos();
-        if (ciclosFormativos.length > 0) {
-            for (CicloFormativo cicloFormativo : ciclosFormativos) {
-                System.out.printf("%s", cicloFormativo);
-            }
-        } else {
-            System.out.println("Ciclo Formativo no encontrado.");
-        }
+        Consola.mostrarCiclosFormativos(ciclosFormativos);
     }
 
     /// Método que permite insertar una matrícula en el sistema
     private void insertarMatricula() throws OperationNotSupportedException {
-        // Se solicita al usuario los datos del alumno desde la consola
-        Alumno alumno = Consola.leerAlumno();
+        // Se solicita al usuario el DNI del alumno desde la consola
+        Alumno alumno = Consola.getAlumnoPorDni();
 
-        // Se obtiene el listado actual de asignaturas desde el controlador
-        Asignatura[] asignaturasDisponibles = controlador.getAsignaturas();
+        /*
+         Si se encuentra el Alumno, éste está registrado en el sistema y podemos seguir con la creación de la
+         matrícula.
+         */
 
-        // Se permite al usuario elegir cuáles asignaturas desea añadir a la matrícula
-        Asignatura[] asignaturasSeleccionadas = Consola.elegirAsignaturasMatricula(asignaturasDisponibles);
-        if (asignaturasSeleccionadas.length == 0) {
-            System.out.println("No se ha seleccionado ninguna asignatura. Matrícula cancelada.");
-            return;
+        if(controlador.buscarAlumno(alumno) != null){
+
+            // Se obtiene el listado actual de asignaturas desde el controlador.
+            Asignatura[] asignaturasDisponibles = controlador.getAsignaturas();
+            if (asignaturasDisponibles.length == 0) {
+                System.out.println("Aún no hay asignaturas registradas.");
+                System.out.println("Antes de insertar una matrícula, debe registrar alguna asignatura.");
+                return;
+            }
+
+            // Se permite al usuario elegir cuáles asignaturas desea añadir a la matrícula
+            Asignatura[] asignaturasSeleccionadas = Consola.elegirAsignaturasMatricula(asignaturasDisponibles);
+            if (asignaturasSeleccionadas.length == 0) {
+                System.out.println("No se ha seleccionado ninguna asignatura. Matrícula cancelada.");
+                return;
+            }
+
+            // Se crea una matrícula con el alumno y las asignaturas seleccionadas.
+            Matricula matricula = Consola.leerMatricula(alumno, asignaturasSeleccionadas);
+
+            // Se inserta la matrícula en el sistema a través del controlador.
+            controlador.insertarMatricula(matricula);
+
+            /*
+            Si no se encuentra el Alumno, se da la posibilidad de insertar un nuevo Alumno para continuar con
+            el proceso de insertar una matrícula.
+             */
+        } else if (controlador.buscarAlumno(alumno) == null) {
+
+            System.out.println("El alumno introducido no se encuentra registrado en el sistema.");
+            System.out.println("¿Desea insertarlo como nuevo alumno? (Si/No)");
+            String respuesta = Entrada.cadena();
+            respuesta = respuesta.trim().toLowerCase();
+
+            if (!respuesta.isBlank() && respuesta.equals("si")){
+                // Se lee y se inserta el nuevo Alumno
+                Alumno alumnoNuevo = Consola.leerAlumno();
+                controlador.insertarAlumno(alumnoNuevo);
+                // Se obtiene el listado actual de asignaturas desde el controlador
+                Asignatura[] asignaturasDisponibles = controlador.getAsignaturas();
+
+                // Se permite al usuario elegir cuáles asignaturas desea añadir a la matrícula
+                Asignatura[] asignaturasSeleccionadas = Consola.elegirAsignaturasMatricula(asignaturasDisponibles);
+                if (asignaturasSeleccionadas.length == 0) {
+                    System.out.println("No se ha seleccionado ninguna asignatura. Matrícula cancelada.");
+                    return;
+                }
+
+                // Se crea una matrícula con el alumno y las asignaturas seleccionadas
+                Matricula matricula = Consola.leerMatricula(alumnoNuevo, asignaturasSeleccionadas);
+
+                // Se inserta la matrícula en el sistema a través del controlador
+                controlador.insertarMatricula(matricula);
+
+            }
         }
 
-        // Se crea una matrícula con el alumno y las asignaturas seleccionadas
-        Matricula matricula = Consola.leerMatricula(alumno, asignaturasSeleccionadas);
-
-        // Se inserta la matrícula en el sistema a través del controlador
-        controlador.insertarMatricula(matricula);
     }
 
 
     // Buscar CicloFormativo
     private void buscarMatricula() throws OperationNotSupportedException {
         Matricula matricula = Consola.getMatriculaPorIdentificador();
-        controlador.buscarMatricula(matricula);
+        System.out.println(controlador.buscarMatricula(matricula));
     }
 
     // Borrar CicloFormativo
@@ -218,8 +272,9 @@ public class Vista {
     private void mostrarMatriculas() {
         Matricula[] matriculas = controlador.getMatriculas();
         if (matriculas.length > 0) {
+            int contador = 1;
             for (Matricula matricula : matriculas) {
-                System.out.printf("%s", matricula);
+                System.out.printf("[%d.-] %s", contador, matricula);
             }
         } else {
             System.out.println("Aún no hay matrículas registradas.");
@@ -231,8 +286,9 @@ public class Vista {
         Alumno alumno = Consola.getAlumnoPorDni();
         Matricula[] resultado = controlador.getMatriculas(alumno);
         if (resultado.length > 0) {
+            int contador = 1;
             for (Matricula matricula : resultado) {
-                System.out.printf("%s", matricula);
+                System.out.printf("[%d.-] %s", contador, matricula);
             }
         } else {
             System.out.println("No hay matrículas registradas para este Alumno.");
@@ -244,8 +300,9 @@ public class Vista {
         CicloFormativo cicloFormativo = Consola.getCicloFormativoPorCodigo();
         Matricula[] resultado = controlador.getMatriculas(cicloFormativo);
         if (resultado.length > 0) {
+            int contador = 1;
             for (Matricula matricula : resultado) {
-                System.out.printf("%s", matricula);
+                System.out.printf("[%d.-] %s", contador, matricula);
             }
         } else {
             System.out.println("No hay matrículas registradas para este Ciclo Formativo");
@@ -255,17 +312,17 @@ public class Vista {
     // Método para mostrar Matrículas por Curso Académico
     private void mostrarMatriculasPorCursoAcademico(){
         System.out.print("Introduce el curso académico (P.ej.: 23-24): ");
-        Curso curso = Consola.leerCurso();
-        Matricula[] resultado = controlador.getMatriculas(curso.toString());
+        String cursoAcademico = Entrada.cadena().trim();
+        Matricula[] resultado = controlador.getMatriculas(cursoAcademico);
         if (resultado.length > 0) {
+            int contador = 1;
             for (Matricula matricula : resultado) {
-                System.out.printf("%s", matricula);
+                System.out.printf("[%d.-] %s", contador, matricula);
             }
         } else {
             System.out.println("No hay matrículas registrada para este Curso Académico.");
         }
 
     }
-
 
 }

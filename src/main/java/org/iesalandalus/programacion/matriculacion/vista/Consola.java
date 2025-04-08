@@ -1,13 +1,13 @@
 package org.iesalandalus.programacion.matriculacion.vista;
 
 import org.iesalandalus.programacion.matriculacion.modelo.dominio.*;
-import org.iesalandalus.programacion.matriculacion.modelo.negocio.CiclosFormativos;
 import org.iesalandalus.programacion.utilidades.Entrada;
 
 import javax.naming.OperationNotSupportedException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Arrays;
 
 /**
  *
@@ -53,33 +53,31 @@ public class Consola {
     // Apartado 13.5.
     // Método para leer un Alumno
     public static Alumno leerAlumno()
-            throws OperationNotSupportedException
     {
         Alumno alumno = null;
         boolean lecturaCorrecta = false;
         do {
             try {
-                System.out.println("Introduce el nombre: ");
+                System.out.println("Introduce el nombre del Alumno: ");
                 String nombre = Entrada.cadena();
 
-                System.out.println("Introduce el DNI: ");
+                System.out.println("Introduce el DNI del Alumno: ");
                 String dni = Entrada.cadena();
 
-                System.out.println("Introduce el e-mail: ");
+                System.out.println("Introduce el e-mail del Alumno: ");
                 String correo = Entrada.cadena();
 
-                System.out.println("Introduce el teléfono: ");
+                System.out.println("Introduce el teléfono del Alumno: ");
                 String telefono = Entrada.cadena();
 
-                LocalDate fechaNacimiento = leerFecha("Introduce la fecha de nacimiento("
+                LocalDate fechaNacimiento = leerFecha("Introduce la fecha de nacimiento del Alumno ("
                         + Alumno.FORMATO_FECHA + "): ");
 
                 alumno = new Alumno(nombre, dni, correo, telefono, fechaNacimiento);
                 lecturaCorrecta = true;
             } catch (Exception e) {
-                System.out.println("ERROR: se ha capturado una excepción.");
-                System.out.println(e.getMessage());
-                System.out.println("Inténtelo de nuevo.");
+                System.out.println(e.getMessage() + "\n" + Arrays.toString(e.getStackTrace()));
+                System.out.println("Lectura del Alumno errónea. \nInténtelo de nuevo.");
             }
         } while (!lecturaCorrecta);
         return alumno;
@@ -141,32 +139,33 @@ public class Consola {
         System.out.println("Introduce el código del Ciclo Formativo: ");
         int codigo = Entrada.entero();
 
-        System.out.println("Introduce la familia profesional: ");
+        System.out.println("Introduce la familia profesional del Ciclo Formativo: ");
         String familiaProfesional = Entrada.cadena();
 
-        System.out.println("Introduce el grado: ");
+        System.out.println("Introduce el grado del Ciclo Formativo: ");
         Grado grado = leerGrado();
 
-        System.out.println("Introduce el nombre: ");
+        System.out.println("Introduce el nombre del Ciclo Formativo: ");
         String nombre = Entrada.cadena();
 
-        System.out.println("Introduce las horas: ");
+        System.out.println("Introduce las horas anuales del Ciclo Formativo: ");
         int horas = Entrada.entero();
 
-        return new CicloFormativo(codigo, familiaProfesional,grado, nombre, horas);
+        return new CicloFormativo(codigo, familiaProfesional, grado, nombre, horas);
     }
 
     // Apartado 13.10.
     // Método para mostrar los Ciclos Formativos registrados en el sistema
     public static void mostrarCiclosFormativos(CicloFormativo[] ciclosFormativos)
     {
-        if (ciclosFormativos.length == 0) {
-            System.out.println("No hay ciclos formativos registrados.");
-        } else {
-            System.out.println("Lista de Ciclos Formativos actuales: ");
-            for (CicloFormativo ciclos : ciclosFormativos) {
-                System.out.println(ciclos);
+        if (ciclosFormativos.length > 0) {
+            int contador = 1;
+            for (CicloFormativo ciclo : ciclosFormativos) {
+                System.out.printf("[%d.-] %s" , contador, ciclo);
+                contador++;
             }
+        } else {
+            System.out.println("No hay Ciclos Formativos registrados.");
         }
     }
 
@@ -219,42 +218,23 @@ public class Consola {
     // Método para leer una asignatura
     public static Asignatura leerAsignatura(CicloFormativo cicloFormativo)
     {
-        System.out.println("Introduce el código: ");
+        System.out.println("Introduce el código de la Asignatura: ");
         String codigo = Entrada.cadena();
 
-        System.out.println("Introduce el nombre: ");
+        System.out.println("Introduce el nombre de la Asignatura: ");
         String nombre = Entrada.cadena();
 
-        System.out.println("Introduce las horas anuales: ");
+        System.out.println("Introduce las horas anuales de la Asignatura: ");
         int horasAnuales = Entrada.entero();
 
-        System.out.println("Introduce el Curso: ");
+        System.out.println("Introduce el Curso de la Asignatura: ");
         Curso curso = leerCurso();
 
-        System.out.println("Introduce las horas de desdoble: ");
+        System.out.println("Introduce las horas de desdoble de la Asignatura: ");
         int horasDesdoble = Entrada.entero();
 
-        System.out.println("Introduce la especialidad del profesorado: ");
+        System.out.println("Introduce la especialidad del profesorado de la Asignatura: ");
         EspecialidadProfesorado especialidadProfesorado = leerEspecialidadProfesorado();
-
-        /*
-        CicloFormativo[] listaCiclos = ciclosFormativos.get();
-
-        System.out.println("Mostrando los Ciclos Formativos existentes: ");
-        for (int i = 0; i < listaCiclos.length; i++) {
-            System.out.println("[" + i+1 +"]: " + listaCiclos[i]);
-        }
-        System.out.println("Selecciona el número del Ciclo Formativo: ");
-
-        int cicloElegido = Entrada.entero()-1;
-        if (cicloElegido < 0 || cicloElegido >= listaCiclos.length) {
-            System.out.println("ERROR: selección no válida. No se creó la asignatura");
-            return null;
-        }
-
-        CicloFormativo cicloFormativo = listaCiclos[cicloElegido];
-         */
-
 
         return new Asignatura(codigo, nombre, horasAnuales, curso, horasDesdoble,
                 especialidadProfesorado, cicloFormativo);
@@ -265,7 +245,7 @@ public class Consola {
     public static Asignatura getAsignaturaPorCodigo()
     {
         CicloFormativo cicloFormativo = new CicloFormativo(1234, "Informática",
-                Grado.GDCFGS, "Desarrollo de Aplicaciones Web", 2000);
+                Grado.GDCFGS, "Desarrollo de Aplicaciones Multiplataforma", 2000);
 
         System.out.println("Introduce el código de la asignatura: ");
         String codigo = Entrada.cadena();
@@ -292,7 +272,7 @@ public class Consola {
 
     // Apartado 13.17.
     // Método para mostrar si existe la asignatura
-    boolean asignaturaYaMatriculada(Asignatura[] asignaturasMatricula, Asignatura asignatura)
+    public static boolean asignaturaYaMatriculada(Asignatura[] asignaturasMatricula, Asignatura asignatura)
     {
         for (Asignatura a : asignaturasMatricula){
             if (a != null && a.equals(asignatura)){
@@ -307,30 +287,35 @@ public class Consola {
     public static Matricula leerMatricula(Alumno alumno, Asignatura[] asignaturas)
             throws OperationNotSupportedException
     {
-        System.out.println("Introduce el ID de la matrícula: ");
+        System.out.println("Introduce el ID de la Matrícula: ");
         int idMatricula = Entrada.entero();
 
-        System.out.println("Introduce el Curso Académico: ");
+        System.out.println("Introduce el Curso Académico de la Matrícula: ");
         String cursoAcademico = Entrada.cadena();
 
         System.out.println("Introduce la fecha de matriculación: ");
-        LocalDate fechaMatriculacion = leerFecha(Entrada.cadena());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(Matricula.FORMATO_FECHA);
+        String fechaMatriculacionStr = Entrada.cadena().trim();
+        LocalDate fechaMatriculacion = LocalDate.parse(fechaMatriculacionStr, formatter);
 
         if (alumno == null) {
             throw new OperationNotSupportedException
                     ("ERROR: el alumno especificado es nulo.");
         }
 
+        // Comprobamos que no haya asignaturas repetidas
         int contador = 0;
-        for (int i = 0; i < asignaturas.length; i++) {
-            if (asignaturas[i].equals(asignaturas[i+1])) {
-                contador++;
+        if (asignaturas.length > 1) {
+            for (int i = 0; i < asignaturas.length; i++) {
+                if (asignaturas[i].equals(asignaturas[i+1])) {
+                    contador++;
+                }
             }
-        }
 
-        if (contador > 0) {
-            throw new IllegalArgumentException
-                    ("ERROR: No puede haber dos asignaturas iguales en la misma matrícula.");
+            if (contador > 0) {
+                throw new IllegalArgumentException
+                        ("ERROR: No puede haber dos asignaturas iguales en la misma matrícula.");
+            }
         }
 
         return new Matricula(idMatricula, cursoAcademico, fechaMatriculacion,
@@ -342,7 +327,7 @@ public class Consola {
         System.out.println("Introduce el ID de la Matrícula: ");
         int idMatricula = Entrada.entero();
 
-        Alumno alumno = new Alumno("Jose", "12345678N", "correo@gmail.com",
+        Alumno alumno = new Alumno("Jose", "12345678Z", "correo@gmail.com",
                 "123456789", LocalDate.of(1990, 1, 1));
 
         int numAsignaturas = 2;
@@ -350,7 +335,7 @@ public class Consola {
         coleccionAsignaturas[0] = new Asignatura();
         coleccionAsignaturas[1] = new Asignatura();
 
-        return new Matricula(idMatricula, "23-24", LocalDate.now().minusYears(13),
+        return new Matricula(idMatricula, "23-24", LocalDate.now().minusDays(13),
                 alumno, coleccionAsignaturas);
     }
 

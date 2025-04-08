@@ -5,16 +5,24 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Objects;
 
+/**
+ *
+ * @author José Antonio Padilla Ramallo
+ * <p>
+ * Clase Matricula para crear objetos de tipo Matricula.
+ * </p>
+ */
+
 // Apartado 7.1.
 public class Matricula {
 
     // Constantes
-    public final int MAXIMO_MESES_ANTERIOR_ANULACION = 6;
+    public final int MAXIMO_MESES_ANTERIORES_ANULACION = 6;
     public final int MAXIMO_DIAS_ANTERIOR_MATRICULA = 15;
     public final int MAXIMO_NUMERO_HORAS_MATRICULA = 1000;
     public final int MAXIMO_NUMERO_ASIGNATURAS_POR_MATRICULA = 10;
-    private static final String ER_CURSO_ACADEMICO = "^(\\d-){2}(\\d-){2}$";
-    public final String FORMATO_FECHA = "dd/MM/yyyy";
+    private static final String ER_CURSO_ACADEMICO = "^\\d{2}-\\d{2}$";
+    public static final String FORMATO_FECHA = "dd/MM/yyyy";
 
     // Atributos
     private int idMatricula;
@@ -93,7 +101,7 @@ public class Matricula {
     // Método SET para la fecha de anulación de matrícula
     public void setFechaAnulacion(LocalDate fechaAnulacion) {
         if (fechaAnulacion == null){
-            this.fechaMatriculacion = null;
+            this.fechaAnulacion = null;
             return;
         }
         if (fechaAnulacion.isAfter(LocalDate.now())){
@@ -104,7 +112,7 @@ public class Matricula {
             throw new IllegalArgumentException
                     ("ERROR: la fecha de anulación de una matriculación no puede ser anterior a la fecha de matriculación");
         }
-        if (fechaAnulacion.isBefore(fechaMatriculacion.minusMonths(MAXIMO_MESES_ANTERIOR_ANULACION))){
+        if (fechaAnulacion.isBefore(fechaMatriculacion.minusMonths(MAXIMO_MESES_ANTERIORES_ANULACION))){
             throw new IllegalArgumentException
                     ("ERROR: la fecha de anulación no puede ser anterior a " +
                             getMAXIMO_MESES_ANTERIORES_ANULACION() + " meses.");
@@ -114,7 +122,7 @@ public class Matricula {
 
     // Método GET para el máximo de meses anteriores a la anulación de la matrícula permitidos
     public int getMAXIMO_MESES_ANTERIORES_ANULACION() {
-        return MAXIMO_MESES_ANTERIOR_ANULACION;
+        return MAXIMO_MESES_ANTERIORES_ANULACION;
     }
 
     // Método GET para el máximo de días anteriores al registro de la matrícula permitidos
@@ -166,7 +174,7 @@ public class Matricula {
             throw new NullPointerException
                     ("ERROR: La lista de asignaturas de una matrícula no puede ser nula.");
         }
-        if (coleccionAsignaturas.length > MAXIMO_NUMERO_ASIGNATURAS_POR_MATRICULA) {
+        if (coleccionAsignaturas.length > getMAXIMO_NUMERO_ASIGNATURAS_POR_MATRICULA()) {
             throw new IllegalArgumentException
                     ("ERROR: No se pueden registrar más de " +
                             MAXIMO_NUMERO_ASIGNATURAS_POR_MATRICULA + " asignaturas.");
@@ -188,13 +196,14 @@ public class Matricula {
                 totalHoras += asignatura.getHorasAnuales();
             }
         }
-        return totalHoras > MAXIMO_NUMERO_HORAS_MATRICULA;
+        return totalHoras > getMAXIMO_NUMERO_HORAS_MATRICULA();
     }
 
     // Apartado 7.4.
     // Método Constructor con parámetros
     public Matricula (int idMatricula, String cursoAcademico, LocalDate fechaMatriculacion,
-                      Alumno alumno, Asignatura[] coleccionAsignaturas){
+                      Alumno alumno, Asignatura[] coleccionAsignaturas)
+    {
         setIdMatricula(idMatricula);
         setCursoAcademico(cursoAcademico);
         setFechaMatriculacion(fechaMatriculacion);
@@ -204,7 +213,8 @@ public class Matricula {
 
     // Apartado 7.5.
     // Método Constructor Copia
-    public Matricula(Matricula otraMatricula){
+    public Matricula(Matricula otraMatricula)
+    {
         if(otraMatricula == null){
             throw new NullPointerException("ERROR: no es posible copiar una matrícula nula.");
         }
@@ -212,8 +222,9 @@ public class Matricula {
         this.cursoAcademico = otraMatricula.getCursoAcademico();
         this.fechaMatriculacion = otraMatricula.getFechaMatriculacion();
         this.fechaAnulacion = otraMatricula.getFechaAnulacion();
-        this.alumno = new Alumno(otraMatricula.alumno);
-        this.coleccionAsignaturas = Arrays.copyOf(otraMatricula.coleccionAsignaturas, otraMatricula.coleccionAsignaturas.length);
+        this.alumno = new Alumno(otraMatricula.getAlumno());
+        this.coleccionAsignaturas = Arrays.copyOf(otraMatricula.coleccionAsignaturas,
+                otraMatricula.coleccionAsignaturas.length);
     }
 
     // Apartado 7.6.
@@ -241,7 +252,7 @@ public class Matricula {
     // Apartado 7.7.
     // Método imprimir
     public String imprimir (){
-        return String.format("ID Matrícula= %d, Curso Académico= %s, Fecha Matriculación= %s, Alumno= {%s}",
+        return String.format("ID Matrícula: %d, Curso Académico: %s, Fecha Matriculación: %s, Alumno: {%s}",
                 idMatricula,
                 cursoAcademico,
                 fechaMatriculacion.format(DateTimeFormatter.ofPattern(getFORMATO_FECHA())),
@@ -252,14 +263,23 @@ public class Matricula {
     // Método toString()
     @Override
     public String toString() {
-        return
-                "Matricula{" +
-                "ID Matricula=" + idMatricula +
-                ", Curso Academico='" + cursoAcademico + '\'' +
-                ", Fecha Matriculacion=" + fechaMatriculacion +
-                ", Fecha Anulacion=" + fechaAnulacion +
-                ", Alumno=" + alumno +
-                ", Colección Asignaturas=" + Arrays.toString(getColeccionAsignaturas()) +
-                '}';
+        return String.format("""
+                %nMatrícula ->
+                {
+                · ID Matricula: %d,
+                · Curso Academico: %s,
+                · Fecha Matriculacion: %s,
+                · Fecha Anulacion: %s,
+                · %s
+                · Colección Asignaturas:
+                %s
+                }%n
+                """,
+                idMatricula,
+                cursoAcademico,
+                fechaMatriculacion.format(DateTimeFormatter.ofPattern(getFORMATO_FECHA())),
+                fechaAnulacion,
+                alumno,
+                asignaturasMatricula());
     }
 }

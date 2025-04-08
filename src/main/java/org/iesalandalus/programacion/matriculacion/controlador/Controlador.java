@@ -5,6 +5,7 @@ import org.iesalandalus.programacion.matriculacion.modelo.dominio.Alumno;
 import org.iesalandalus.programacion.matriculacion.modelo.dominio.Asignatura;
 import org.iesalandalus.programacion.matriculacion.modelo.dominio.CicloFormativo;
 import org.iesalandalus.programacion.matriculacion.modelo.dominio.Matricula;
+import org.iesalandalus.programacion.matriculacion.vista.Consola;
 import org.iesalandalus.programacion.matriculacion.vista.Vista;
 import javax.naming.OperationNotSupportedException;
 
@@ -15,10 +16,7 @@ import javax.naming.OperationNotSupportedException;
  */
 public class Controlador {
 
-    // Controlador.2.
-    // Atributos
-    private Modelo modelo;
-    private Vista vista;
+    private final Vista vista;
 
     // Controlador.3.
     // Constructor con parámetros
@@ -29,10 +27,14 @@ public class Controlador {
             throw new NullPointerException
                     ("ERROR: el modelo o la vista no pueden ser nulos.\n");
         }
-        this.modelo = modelo;
+
+        // Controlador.2.
+        // Atributos
         this.vista = vista;
-        // Recuerda usar el método setControlador de la clase Vista cuando lo hayas codificado
+        vista.iniciarControlador(this);
     }
+
+
 
     // Controlador.4.
     /*
@@ -82,7 +84,12 @@ public class Controlador {
     // Métodos para hacer operaciones con Asignaturas:
     public void insertarAsignatura(Asignatura asignatura)
     {
-        Modelo.insertarAsignatura(asignatura);
+        Asignatura[] asignaturas = getAsignaturas();
+        if (!Consola.asignaturaYaMatriculada(asignaturas, asignatura)) {
+            Modelo.insertarAsignatura(asignatura);
+        } else {
+            System.out.println("La asignatura que intenta insertar ya existe.");
+        }
     }
 
     public Asignatura buscarAsignatura (Asignatura asignatura)

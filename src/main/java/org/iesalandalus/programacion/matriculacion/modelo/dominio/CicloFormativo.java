@@ -6,9 +6,7 @@ import java.util.Objects;
  *
  * @author José Antonio Padilla Ramallo
  * <p>
- * Clase CicloFormativo, capaz de instanciar objetos de su mismo tipo que además contiene como atributo privado una
- * instancia del Enumerado Grad y comprobar que sus atributos miembro sean los adecuados a través de distintas
- * comprobaciones que realizan sus métodos.
+ * Clase CicloFormativo para crear objetos de tipo CicloFormativo.
  * </p>
  */
 
@@ -17,7 +15,7 @@ public class CicloFormativo {
 
     // Atributos
     public static final int MAXIMO_NUMERO_HORAS = 2000;
-    private static final String REGEX_CODIGO = "^\\d{4}";
+    private static final String ER_CODIGO = "^\\d{4}";
     private int codigo;
     private String familiaProfesional;
     private Grado grado;
@@ -55,7 +53,7 @@ public class CicloFormativo {
             throws IllegalArgumentException
     {
         String codigoStr = String.format("%04d", codigo);
-        if (!codigoStr.matches(REGEX_CODIGO)){
+        if (!codigoStr.matches(ER_CODIGO)){
             throw new IllegalArgumentException
                     ("ERROR: El código del ciclo formativo debe ser un número de 4 dígitos.");
         }
@@ -132,9 +130,12 @@ public class CicloFormativo {
      * @throws IllegalStateException Si el argumento está vacío o sólo contiene espacios en blanco
      */
     // Método SET para el nombre
-    public void setNombre(String nombre) throws NullPointerException, IllegalStateException{
+    public void setNombre(String nombre)
+            throws NullPointerException, IllegalStateException
+    {
         if (nombre == null){
-            throw new NullPointerException("ERROR: el nombre no puede ser nulo.");
+            throw new NullPointerException
+                    ("ERROR: el nombre no puede ser nulo.");
         } else if (nombre.isBlank()) {
             throw new IllegalStateException
                     ("ERROR: el nombre no puede estar vacío o contener sólo espacios en blanco.");
@@ -161,7 +162,7 @@ public class CicloFormativo {
     public void setHoras(int horas)
             throws IllegalArgumentException
     {
-        if (horas > 0 && horas <= MAXIMO_NUMERO_HORAS){
+        if (horas > 0 && horas <= getMAXIMO_NUMERO_HORAS()){
             this.horas = horas;
         } else {
             throw new IllegalArgumentException
@@ -268,13 +269,15 @@ public class CicloFormativo {
     // Método toString
     @Override
     public String toString() {
-        return String.format("CicloFormativo{" +
-                "%nCodigo= %d\n" +
-                "Familia Profesional= %s\n" +
-                "Grado= %s\n" +
-                "Nombre= %s\n" +
-                "Horas= %d\n" +
-                '}',
+        return String.format("""
+                        Ciclo Formativo -> 
+                        {
+                        · Código: %d
+                        · Familia Profesional: %s
+                        · Grado: %s
+                        · Nombre: %s
+                        · Horas: %d
+                        }""",
                 codigo,
                 familiaProfesional,
                 grado,
