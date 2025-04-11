@@ -13,7 +13,7 @@ public class Matriculas {
 
     private ArrayList<Matricula> coleccionMatriculas; // Array interno para gestionar Matrículas
 
-    // Método GETTER para el atributo tamaño
+    // Método GETTER para el tamaño de la colección
     public int getTamano() {
         return coleccionMatriculas.size();
     }
@@ -65,6 +65,7 @@ public class Matriculas {
     public Matricula buscar(Matricula matricula)
     {
         if (matricula == null) {
+            System.out.println("La matrícula que está buscando es nula.");
             return null;
         }
         if (coleccionMatriculas.contains(matricula)) {
@@ -77,10 +78,10 @@ public class Matriculas {
     // Apartado 11.1.v.
     // Método para borrar una matrícula
     public void borrar(Matricula matricula)
-            throws NullPointerException
+            throws IllegalArgumentException
     {
         if (matricula == null){
-            throw new NullPointerException
+            throw new IllegalArgumentException
                     ("ERROR: no se puede borrar una matrícula nula.");
         }
         if (coleccionMatriculas.contains(matricula)){
