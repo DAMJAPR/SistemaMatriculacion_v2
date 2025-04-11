@@ -2,7 +2,7 @@ package org.iesalandalus.programacion.matriculacion.modelo.dominio;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Objects;
 
 /**
@@ -30,7 +30,7 @@ public class Matricula {
     private LocalDate fechaMatriculacion;
     private LocalDate fechaAnulacion;
     private Alumno alumno;
-    private Asignatura[] coleccionAsignaturas;
+    private ArrayList<Asignatura> coleccionAsignaturas;
 
     // Apartado 7.2.
     // Métodos de acceso y modificación de los atributos
@@ -164,17 +164,19 @@ public class Matricula {
     }
 
     // Método GET para la colección de asignaturas
-    public Asignatura[] getColeccionAsignaturas() {
-        return Arrays.copyOf(coleccionAsignaturas, coleccionAsignaturas.length);
+    public ArrayList getColeccionAsignaturas() {
+        return (ArrayList<Asignatura>) coleccionAsignaturas.clone();
+                //Arrays.copyOf(coleccionAsignaturas, coleccionAsignaturas.length);
     }
 
     // Método SET para la colección de asignaturas
-    public void setColeccionAsignaturas(Asignatura[] coleccionAsignaturas){
+    public void setColeccionAsignaturas(ArrayList<Asignatura> coleccionAsignaturas)
+    {
         if (coleccionAsignaturas == null) {
             throw new NullPointerException
                     ("ERROR: La lista de asignaturas de una matrícula no puede ser nula.");
         }
-        if (coleccionAsignaturas.length > getMAXIMO_NUMERO_ASIGNATURAS_POR_MATRICULA()) {
+        if (coleccionAsignaturas.size() > getMAXIMO_NUMERO_ASIGNATURAS_POR_MATRICULA()) {
             throw new IllegalArgumentException
                     ("ERROR: No se pueden registrar más de " +
                             MAXIMO_NUMERO_ASIGNATURAS_POR_MATRICULA + " asignaturas.");
@@ -184,12 +186,12 @@ public class Matricula {
                     ("ERROR: No se puede realizar la matrícula ya que supera el máximo de horas permitidas (" +
                             MAXIMO_NUMERO_HORAS_MATRICULA + " horas).");
         }
-        this.coleccionAsignaturas = Arrays.copyOf(coleccionAsignaturas, coleccionAsignaturas.length);
+        this.coleccionAsignaturas = (ArrayList<Asignatura>) coleccionAsignaturas.clone();
     }
 
     // Apartado 7.3.
     // Método para chequear el número de horas por matrícula
-    private boolean superaMaximoNumeroHorasMatricula(Asignatura[] asignaturasMatricula){
+    private boolean superaMaximoNumeroHorasMatricula(ArrayList<Asignatura> asignaturasMatricula){
         int totalHoras = 0;
         for (Asignatura asignatura : asignaturasMatricula){
             if (asignatura != null){
@@ -202,7 +204,7 @@ public class Matricula {
     // Apartado 7.4.
     // Método Constructor con parámetros
     public Matricula (int idMatricula, String cursoAcademico, LocalDate fechaMatriculacion,
-                      Alumno alumno, Asignatura[] coleccionAsignaturas)
+                      Alumno alumno, ArrayList<Asignatura> coleccionAsignaturas)
     {
         setIdMatricula(idMatricula);
         setCursoAcademico(cursoAcademico);
@@ -223,8 +225,7 @@ public class Matricula {
         this.fechaMatriculacion = otraMatricula.getFechaMatriculacion();
         this.fechaAnulacion = otraMatricula.getFechaAnulacion();
         this.alumno = new Alumno(otraMatricula.getAlumno());
-        this.coleccionAsignaturas = Arrays.copyOf(otraMatricula.coleccionAsignaturas,
-                otraMatricula.coleccionAsignaturas.length);
+        this.coleccionAsignaturas = (ArrayList<Asignatura>) otraMatricula.getColeccionAsignaturas();
     }
 
     // Apartado 7.6.
@@ -246,7 +247,7 @@ public class Matricula {
     // En este punto aparece un método privado llamado asignaturasMatricula() pero que
     // no se especifica su codificación en el archivo README.md
     private String asignaturasMatricula(){
-        return Arrays.toString(getColeccionAsignaturas());
+        return getColeccionAsignaturas().toString();
     }
 
     // Apartado 7.7.
