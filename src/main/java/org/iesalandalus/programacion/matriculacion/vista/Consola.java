@@ -7,6 +7,7 @@ import javax.naming.OperationNotSupportedException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
@@ -272,7 +273,7 @@ public class Consola {
 
     // Apartado 13.17.
     // Método para mostrar si existe la asignatura
-    public static boolean asignaturaYaMatriculada(Asignatura[] asignaturasMatricula, Asignatura asignatura)
+    public static boolean asignaturaYaMatriculada(ArrayList<Asignatura> asignaturasMatricula, Asignatura asignatura)
     {
         for (Asignatura a : asignaturasMatricula){
             if (a != null && a.equals(asignatura)){
