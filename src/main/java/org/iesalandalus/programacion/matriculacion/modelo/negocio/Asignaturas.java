@@ -83,7 +83,7 @@ public class Asignaturas {
         }
         if (coleccionAsignaturas.contains(asignatura)){
             coleccionAsignaturas.remove(asignatura);
-            System.out.println("\nMatrícula borrada correctamente.");
-        } else System.out.println("\nNo se encuentra la matrícula que desea borrar.");
+            System.out.println("\nAsignatura borrada correctamente.");
+        } else System.out.println("\nNo se encuentra la Asignatura que desea borrar.");
     }
 }

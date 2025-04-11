@@ -87,7 +87,7 @@ public class Matriculas {
         if (coleccionMatriculas.contains(matricula)){
             coleccionMatriculas.remove(matricula);
             System.out.println("\nMatrícula borrada correctamente.");
-        } else System.out.println("\nNo se encuentra la matrícula que desea borrar.");
+        } else System.out.println("\nNo se encuentra la Matrícula que desea borrar.");
     }
 
     // Apartado 2.
@@ -134,7 +134,7 @@ public class Matriculas {
             for (Asignatura a : m.getColeccionAsignaturas()) {
                 if (a.getCicloFormativo().equals(cicloFormativo)) {
                     resultado.add(new Matricula(m)); // Copia profunda
-                    break; // No hace falta seguir buscando en las asignaturas
+                    break;
                 }
             }
         }

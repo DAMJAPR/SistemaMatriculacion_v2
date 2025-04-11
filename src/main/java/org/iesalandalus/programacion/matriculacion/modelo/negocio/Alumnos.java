@@ -75,12 +75,12 @@ public class Alumnos {
     {
         if (alumno == null) {
             throw new NullPointerException
-                    ("ERROR: el alumno es nulo.");
+                    ("ERROR: el Alumno es nulo.");
         } else if (coleccionAlumnos.contains(alumno)){
             coleccionAlumnos.remove(alumno);
             System.out.println("Alumno borrado correctamente.");
         } else
-            System.out.println("No se encuentra el alumno que desea borrar.");
+            System.out.println("No se encuentra el Alumno que desea borrar.");
     }
 
 }
