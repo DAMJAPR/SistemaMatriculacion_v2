@@ -257,9 +257,9 @@ public class Consola {
 
     // Apartado 13.16.
     // Método para mostrar las asignaturas
-    private static void mostrarAsignaturas(Asignatura[] asignaturas)
+    private static void mostrarAsignaturas(ArrayList<Asignatura> asignaturas)
     {
-        if (asignaturas.length == 0) {
+        if (asignaturas.size() == 0) {
             System.out.println("Aún no hay asignaturas registradas.");
         } else {
             System.out.println("Mostrando la lista actual de asignaturas: ");
@@ -285,7 +285,7 @@ public class Consola {
 
     // Apartado 13.18
     // Método para leer una matrícula
-    public static Matricula leerMatricula(Alumno alumno, Asignatura[] asignaturas)
+    public static Matricula leerMatricula(Alumno alumno, ArrayList<Asignatura> asignaturas)
             throws OperationNotSupportedException
     {
         System.out.println("Introduce el ID de la Matrícula: ");
@@ -305,17 +305,14 @@ public class Consola {
         }
 
         // Comprobamos que no haya asignaturas repetidas
-        int contador = 0;
-        if (asignaturas.length > 1) {
-            for (int i = 0; i < asignaturas.length; i++) {
-                if (asignaturas[i].equals(asignaturas[i+1])) {
-                    contador++;
+        if (asignaturas.size() > 1) {
+            for (int i = 0; i < asignaturas.size() - 1; i++) {
+                for (int j = i + 1; j < asignaturas.size(); j++) {
+                    if (asignaturas.get(i).equals(asignaturas.get(j))) {
+                        throw new IllegalArgumentException(
+                                "ERROR: No puede haber dos asignaturas iguales en la misma matrícula.");
+                    }
                 }
-            }
-
-            if (contador > 0) {
-                throw new IllegalArgumentException
-                        ("ERROR: No puede haber dos asignaturas iguales en la misma matrícula.");
             }
         }
 
@@ -341,7 +338,7 @@ public class Consola {
     }
 
     // Método para obtener el array de asignaturas que se asignarán en una matrícula.
-    public static Asignatura[] elegirAsignaturasMatricula(Asignatura[] asignaturas) {
+    public static ArrayList<Asignatura> elegirAsignaturasMatricula(ArrayList<Asignatura> asignaturas) {
     Consola.mostrarAsignaturas(asignaturas);
 
     System.out.println("Para añadir una asignatura, " +
