@@ -165,12 +165,16 @@ public class Matricula {
 
     // Método GET para la colección de asignaturas
     public ArrayList getColeccionAsignaturas() {
-        return (ArrayList<Asignatura>) coleccionAsignaturas.clone();
-                //Arrays.copyOf(coleccionAsignaturas, coleccionAsignaturas.length);
+        ArrayList<Asignatura> copiaAsignaturas = new ArrayList<>();
+        for (Asignatura a : coleccionAsignaturas) {
+            copiaAsignaturas.add(new Asignatura(a)); // Constructor copia de Asignatura
+        }
+        return copiaAsignaturas;
     }
 
     // Método SET para la colección de asignaturas
     public void setColeccionAsignaturas(ArrayList<Asignatura> coleccionAsignaturas)
+            throws NullPointerException, IllegalArgumentException
     {
         if (coleccionAsignaturas == null) {
             throw new NullPointerException
@@ -186,7 +190,12 @@ public class Matricula {
                     ("ERROR: No se puede realizar la matrícula ya que supera el máximo de horas permitidas (" +
                             MAXIMO_NUMERO_HORAS_MATRICULA + " horas).");
         }
-        this.coleccionAsignaturas = (ArrayList<Asignatura>) coleccionAsignaturas.clone();
+
+        this.coleccionAsignaturas = new ArrayList<>();
+
+        for (Asignatura a : coleccionAsignaturas) {
+            this.coleccionAsignaturas.add(new Asignatura(a)); // Constructor copia
+        }
     }
 
     // Apartado 7.3.
