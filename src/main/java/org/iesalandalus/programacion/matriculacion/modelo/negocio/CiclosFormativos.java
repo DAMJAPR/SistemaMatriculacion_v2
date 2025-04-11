@@ -12,7 +12,7 @@ public class CiclosFormativos {
 
     // Apartado 9.1.i.
     // Constructor con parámetros
-    public CiclosFormativos(int capacidad)
+    public CiclosFormativos()
             throws IllegalArgumentException
     {
         this.coleccionCiclosFormativos = new ArrayList<>(); // inicializa el array

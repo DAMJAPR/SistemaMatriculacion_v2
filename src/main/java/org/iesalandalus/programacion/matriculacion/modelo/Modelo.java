@@ -12,6 +12,7 @@ import org.iesalandalus.programacion.matriculacion.vista.Consola;
 import org.iesalandalus.programacion.utilidades.Entrada;
 
 import javax.naming.OperationNotSupportedException;
+import java.util.ArrayList;
 
 /**
  *
@@ -23,31 +24,29 @@ import javax.naming.OperationNotSupportedException;
 
 public class Modelo {
 
-    public static final int CAPACIDAD = 3;
-
-    // Declaramos las colecciones como atributos estáticos sin inicializarlas aún
-    private static Alumnos coleccionAlumnos;
-    private static Asignaturas coleccionAsignaturas;
-    private static CiclosFormativos coleccionCiclos;
-    private static Matriculas coleccionMatriculas;
+    // Declaramos las colecciones sin inicializarlas aún
+    private ArrayList<Alumno> coleccionAlumnos;
+    private ArrayList<Asignatura> coleccionAsignaturas;
+    private ArrayList<CicloFormativo> coleccionCiclos;
+    private ArrayList<Matricula> coleccionMatriculas;
 
     // Modelo.2.
     /*
     Método comenzar que creará la instancia de las clases de negocio.
      */
-    public static void comenzar(){
+    public void comenzar(){
         // Creamos las instancias dentro
-        coleccionAlumnos = new Alumnos(CAPACIDAD);
-        coleccionAsignaturas = new Asignaturas(CAPACIDAD);
-        coleccionCiclos = new CiclosFormativos(CAPACIDAD);
-        coleccionMatriculas = new Matriculas(CAPACIDAD);
+        coleccionAlumnos = new ArrayList<>();
+        coleccionAsignaturas = new ArrayList<>();
+        coleccionCiclos = new ArrayList<>();
+        coleccionMatriculas = new ArrayList<>();
     }
 
     // Modelo.3.
     /*
     Método terminar que muestra un mensaje informativo indicando que el modelo ha terminado.
      */
-    public static void terminar(){
+    public void terminar(){
 
         System.out.println("""
 
@@ -56,29 +55,30 @@ public class Modelo {
 
     }
 
-
     // Modelo.4.
     /*
     Métodos insertar(para Alumno, Asignatura, Ciclo Formativo y Matricula).
      */
 
-    public static void insertarAlumno(Alumno alumno){
+    public void insertarAlumno(Alumno alumno){
         boolean insercionCorrecta = false;
         while (!insercionCorrecta) {
             try {
-                coleccionAlumnos.insertarAlumno(alumno);
+                coleccionAlumnos.add(alumno);
                 insercionCorrecta = true;
-            } catch (NullPointerException | IllegalArgumentException | OperationNotSupportedException e) {
-                System.out.println("ERROR: No ha sido posible insertar el alumno.\n");
-                System.out.println(e.getMessage());
-                System.out.println("Inténtelo de nuevo o escriba 'salir' para cancelar.");
+            } catch (NullPointerException | IllegalArgumentException e) {
+                System.out.println(e.getMessage() + "\n" + e.getStackTrace());
+                System.out.println("""
+                        
+                        ERROR: No ha sido posible insertar el alumno.
+                        Inténtelo de nuevo o escriba 'salir' para cancelar la inserción.%n
+                        """);
 
                 // Opción para salir si el usuario no quiere seguir intentando
-                System.out.print("¿Desea volver a intentarlo? (Sí/No): ");
                 String respuesta = "";
                 while (respuesta == null || respuesta.isBlank()) {
                     System.out.print("¿Desea volver a intentarlo? (Sí/No): ");
-                    respuesta = Entrada.cadena();
+                    respuesta = Entrada.cadena().trim().toLowerCase();
                 }
                 if (respuesta.equals("no") || respuesta.equals("salir")) {
                     System.out.println("Inserción cancelada.");
@@ -92,28 +92,28 @@ public class Modelo {
         }
     }
 
-    public static void insertarAsignatura(Asignatura asignatura){
+    public void insertarAsignatura(Asignatura asignatura){
         try {
-            coleccionAsignaturas.insertar(asignatura);
+            coleccionAsignaturas.add(asignatura);
         } catch (Exception e) {
             System.out.println("ERROR: excepción capturada.\n" + e.getMessage());
         }
         System.out.println("\nAsignatura insertada correctamente.");
     }
 
-    public static void insertarCicloFormativo(CicloFormativo cicloFormativo) {
+    public void insertarCicloFormativo(CicloFormativo cicloFormativo) {
         try {
-            coleccionCiclos.insertarCiclo(cicloFormativo);
+            coleccionCiclos.add(cicloFormativo);
         } catch (Exception e) {
             System.out.println("ERROR: excepción capturada.\n" + e.getMessage());
         }
         System.out.println("\nCiclo Formativo insertado correctamente.");
     }
 
-    public static void insertarMatricula(Matricula matricula)
+    public void insertarMatricula(Matricula matricula)
     {
         try {
-            coleccionMatriculas.insertar(matricula);
+            coleccionMatriculas.add(matricula);
         } catch (Exception e) {
             System.out.println("ERROR: excepción capturada.\n" + e.getMessage());
         }
@@ -124,12 +124,11 @@ public class Modelo {
     /*
     Métodos buscar, cada uno devuelve una nueva instancia del elemento encontrado si éste existe.
      */
-    public static Alumno buscarAlumno(Alumno alumno) {
+    public Alumno buscarAlumno(Alumno alumno) {
         try {
-            Alumno buscado = coleccionAlumnos.buscar(alumno);
-            if (buscado != null) {
+            if (coleccionAlumnos.contains(alumno)) {
                 System.out.println("Alumno encontrado: ");
-                return buscado;
+                return alumno;
             } else {
                 System.out.println("Alumno no encontrado.");
             }
@@ -139,13 +138,11 @@ public class Modelo {
         return null;
     }
 
-    public static Asignatura buscarAsignatura(Asignatura asignatura){
+    public Asignatura buscarAsignatura(Asignatura asignatura){
         try {
-            // Asignatura asignatura = Consola.getAsignaturaPorCodigo();
-            Asignatura buscada = coleccionAsignaturas.buscar(asignatura);
-            if (buscada != null) {
+            if (coleccionAsignaturas.contains(asignatura)) {
                 System.out.println("Asignatura encontrada: ");
-                System.out.println(buscada);
+                System.out.println(asignatura);
             } else {
                 System.out.println("Asignatura no encontrada.");
             }
@@ -155,12 +152,11 @@ public class Modelo {
         return null;
     }
 
-    public static CicloFormativo buscarCicloFormativo(CicloFormativo cicloFormativo){
+    public CicloFormativo buscarCicloFormativo(CicloFormativo cicloFormativo){
         try {
-            CicloFormativo buscado = coleccionCiclos.buscar(cicloFormativo);
-            if (buscado != null) {
+            if (coleccionCiclos.contains(cicloFormativo)) {
                 System.out.println("Ciclo Formativo encontrado:\n");
-                return buscado;
+                return cicloFormativo;
             } else {
                 System.out.println("Ciclo formativo no encontrado.");
             }
@@ -170,13 +166,11 @@ public class Modelo {
         return null;
     }
 
-    public static Matricula buscarMatricula(Matricula matricula) {
+    public Matricula buscarMatricula(Matricula matricula) {
         try {
-            // Matricula matricula = Consola.getMatriculaPorIdentificador();
-            Matricula buscada = coleccionMatriculas.buscar(matricula);
-            if (buscada != null) {
+            if (coleccionMatriculas.contains(matricula)) {
                 System.out.println("Matrícula encontrada:\n");
-                return buscada;
+                return matricula;
             } else {
                 System.out.println("Matrícula no encontrada.");
             }
@@ -191,37 +185,74 @@ public class Modelo {
     /*
     Métodos borrar (para Alumno, Asignatura, Ciclo Formativo y Matricula).
      */
-    public static void borrarAlumno(Alumno alumno) {
+    public void borrarAlumno(Alumno alumno)
+            throws IllegalArgumentException
+    {
         try {
-            coleccionAlumnos.borrar(alumno);
+            if (alumno == null) {
+                throw new IllegalArgumentException
+                        ("ERROR: no se puede borrar un Alumno nulo.");
+            }
+            if (!coleccionAlumnos.contains(alumno)) {
+                throw new OperationNotSupportedException
+                        ("ERROR: el Alumno que intenta borrar no se encuentra registrado en el sistema.");
+            } else coleccionAlumnos.remove(alumno);
         } catch (Exception e) {
             System.out.println("ERROR: excepción capturada.\n" + e.getMessage());
         }
 
     }
 
-    public static void borrarAsignatura (Asignatura asignatura) {
+    public void borrarAsignatura (Asignatura asignatura)
+            throws IllegalArgumentException
+    {
         try {
-            coleccionAsignaturas.borrar(asignatura);
+            if (asignatura == null) {
+                throw new IllegalArgumentException
+                        ("ERROR: no se puede borrar una Asignatura nula.");
+            }
+            if (!coleccionAsignaturas.contains(asignatura)) {
+                throw new OperationNotSupportedException
+                        ("ERROR: la Asignatura que intenta borrar no se encuentra registrada en el sistema.");
+            } else coleccionAsignaturas.remove(asignatura);
         } catch (Exception e) {
             System.out.println("ERROR: se ha capturado una excepción.\n" + e.getMessage());
         }
     }
 
-    public static void borrarCicloFormativo(CicloFormativo cicloFormativo) {
+    public void borrarCicloFormativo (CicloFormativo cicloFormativo)
+            throws IllegalArgumentException
+    {
         try {
-            // CicloFormativo cicloFormativo = Consola.getCicloFormativoPorCodigo();
-            coleccionCiclos.borrar(cicloFormativo);
+            if (cicloFormativo == null) {
+                throw new IllegalArgumentException
+                        ("ERROR: no se puede borrar un CicloFormativo nulo.");
+            }
+            if (!coleccionCiclos.contains(cicloFormativo)) {
+                throw new OperationNotSupportedException
+                        ("ERROR: el CicloFormativo que intenta borrar no se encuentra registrado en el sistema.");
+            } else coleccionCiclos.remove(cicloFormativo);
         } catch (Exception e) {
             System.out.println("ERROR: excepción capturada.\n" + e.getMessage());
         }
     }
 
-    public static void borrarMatricula(Matricula matricula)
+    public void borrarMatricula(Matricula matricula)
+            throws IllegalArgumentException
     {
         try {
-            matricula.setFechaAnulacion (Consola.leerFecha("Introduce la fecha de anulación (dd/MM/yyyy): "));
-            coleccionMatriculas.borrar(matricula);
+            if (matricula == null) {
+                throw new IllegalArgumentException
+                        ("ERROR: no se puede borrar un CicloFormativo nulo.");
+            }
+            if (!coleccionMatriculas.contains(matricula)) {
+                throw new OperationNotSupportedException
+                        ("ERROR: la Matrícula que intenta borrar no se encuentra registrada en el sistema.");
+            } else {
+                matricula.setFechaAnulacion
+                        (Consola.leerFecha("Introduce la fecha de anulación (dd/MM/yyyy): "));
+                coleccionMatriculas.remove(matricula);
+            }
         } catch (Exception e) {
             System.out.println("ERROR: excepción capturada.\n" + e.getMessage());
         }
@@ -234,35 +265,73 @@ public class Modelo {
      */
 
     // Métogo GET para los Alumnos
-    public static Alumno[] getAlumnos(){
-        return coleccionAlumnos.get();
+    public ArrayList<Alumno> getAlumnos()
+    {
+        ArrayList<Alumno> copiaAlumnos = new ArrayList<>();
+        for (Alumno a : coleccionAlumnos) {
+            copiaAlumnos.add(new Alumno(a));
+        }
+        if (copiaAlumnos.size() == 0) {
+            System.out.println("Aún no hay Alumnos registrados");
+        }
+        return copiaAlumnos;
     }
 
     // Métogo GET para las Asignaturas
-    public static Asignatura[] getAsignaturas(){
-        return coleccionAsignaturas.get();
+    public ArrayList<Asignatura> getAsignaturas()
+    {
+        ArrayList<Asignatura> copiaAsignaturas = new ArrayList<>();
+        for (Asignatura a : coleccionAsignaturas) {
+            copiaAsignaturas.add(new Asignatura(a));
+        }
+        if (copiaAsignaturas.size() == 0) {
+            System.out.println("Aún no hay Asignaturas registradas");
+        }
+        return copiaAsignaturas;
     }
 
     // Métogo GET para los CiclosFormativos
-    public static CicloFormativo[] getCiclos(){
-        return coleccionCiclos.get();
+    public ArrayList <CicloFormativo> getCiclos()
+    {
+        ArrayList<CicloFormativo> copiaCiclos = new ArrayList<>();
+        for (CicloFormativo c : coleccionCiclos) {
+            copiaCiclos.add(new CicloFormativo(c));
+        }
+        if (copiaCiclos.size() == 0) {
+            System.out.println("Aún no hay CiclosFormativos registrados");
+        }
+        return copiaCiclos;
     }
 
     // Métodos GET para las matrículas
-    public static Matricula[] getMatriculas (){
-        return coleccionMatriculas.get();
+    public ArrayList<Matricula> getMatriculas ()
+    {
+        ArrayList<Matricula> copiaMatriculas = new ArrayList<>();
+        for (Matricula m : coleccionMatriculas) {
+            copiaMatriculas.add(new Matricula(m));
+        }
+        if (copiaMatriculas.size() == 0) {
+            System.out.println("Aún no hay Matrículas registradas");
+        }
+        return copiaMatriculas;
     }
 
-    public static Matricula[] getMatriculas (Alumno alumno){
-        return coleccionMatriculas.get(alumno);
+    public ArrayList<Matricula> getMatriculas (Alumno alumno)
+    {
+        Matriculas copiaMatriculasAlumno = new Matriculas();
+        return copiaMatriculasAlumno.get(alumno);
     }
 
-    public static Matricula[] getMatriculas (CicloFormativo cicloFormativo){
-        return coleccionMatriculas.get(cicloFormativo);
+    public ArrayList<Matricula> getMatriculas (CicloFormativo cicloFormativo)
+    {
+        Matriculas copiaMatriculasCiclo = new Matriculas();
+        return copiaMatriculasCiclo.get(cicloFormativo);
     }
 
-    public static Matricula[] getMatriculas(String cursoAcademico){
-        return coleccionMatriculas.get(cursoAcademico);
+    public ArrayList<Matricula> getMatriculas(String cursoAcademico)
+    {
+        Matriculas copiaMatriculasCurso = new Matriculas();
+        return copiaMatriculasCurso.get(cursoAcademico);
     }
 
 }
