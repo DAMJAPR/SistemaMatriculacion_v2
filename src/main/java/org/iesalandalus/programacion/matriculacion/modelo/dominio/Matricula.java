@@ -164,7 +164,7 @@ public class Matricula {
     }
 
     // Método GET para la colección de asignaturas
-    public ArrayList getColeccionAsignaturas() {
+    public ArrayList<Asignatura> getColeccionAsignaturas() {
         ArrayList<Asignatura> copiaAsignaturas = new ArrayList<>();
         for (Asignatura a : coleccionAsignaturas) {
             copiaAsignaturas.add(new Asignatura(a)); // Constructor copia de Asignatura
