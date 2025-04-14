@@ -8,8 +8,6 @@ import javax.naming.OperationNotSupportedException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
-
 
 /**
  *
@@ -77,14 +75,14 @@ public class Vista {
                 case BUSCAR_ALUMNO -> buscarAlumno();
                 case BORRAR_ALUMNO -> borrarAlumno();
                 case MOSTRAR_ALUMNOS -> mostrarAlumnos();
-                case INSERTAR_ASIGNATURA -> insertarAsignatura();
-                case BUSCAR_ASIGNATURA -> buscarAsignatura();
-                case BORRAR_ASIGNATURA -> borrarAsignatura();
-                case MOSTRAR_ASIGNATURAS -> mostrarAsignaturas();
                 case INSERTAR_CICLO_FORMATIVO -> insertarCicloFormativo();
                 case BUSCAR_CICLO_FORMATIVO -> buscarCicloFormativo();
                 case BORRAR_CICLO_FORMATIVO -> borrarCicloFormativo();
                 case MOSTRAR_CICLOS_FORMATIVOS -> mostrarCiclosFormativos();
+                case INSERTAR_ASIGNATURA -> insertarAsignatura();
+                case BUSCAR_ASIGNATURA -> buscarAsignatura();
+                case BORRAR_ASIGNATURA -> borrarAsignatura();
+                case MOSTRAR_ASIGNATURAS -> mostrarAsignaturas();
                 case INSERTAR_MATRICULA -> insertarMatricula();
                 case BUSCAR_MATRICULA -> buscarMatricula();
                 case ANULAR_MATRICULA -> anularMatricula();
@@ -132,7 +130,7 @@ public class Vista {
         } else {
             List<Alumno> alumnosOrdenadosPorNombre = alumnos.stream()
                     .sorted(Comparator.comparing(Alumno::getNombre, String.CASE_INSENSITIVE_ORDER))
-                    .collect(Collectors.toList());
+                    .toList();
 
             for (Alumno alumno : alumnosOrdenadosPorNombre) {
                 System.out.println(alumno);
@@ -177,7 +175,7 @@ public class Vista {
         } else {
             List<Asignatura> asignaturasOrdenadasPorNombre = asignaturas.stream()
                     .sorted(Comparator.comparing(Asignatura::getNombre, String.CASE_INSENSITIVE_ORDER))
-                    .collect(Collectors.toList());
+                    .toList();
 
             for (Asignatura asignatura : asignaturasOrdenadasPorNombre) {
                 System.out.println(asignatura);
@@ -218,7 +216,7 @@ public class Vista {
         } else {
             List<CicloFormativo> ciclosOrdenadosPorNombre = ciclosFormativos.stream()
                     .sorted(Comparator.comparing(CicloFormativo::getNombre, String.CASE_INSENSITIVE_ORDER))
-                    .collect(Collectors.toList());
+                    .toList();
 
             for (CicloFormativo cicloFormativo : ciclosOrdenadosPorNombre) {
                 System.out.println(cicloFormativo);
@@ -242,7 +240,7 @@ public class Vista {
 
             // Se obtiene el listado actual de asignaturas desde el controlador.
             ArrayList<Asignatura> asignaturasDisponibles = controlador.getAsignaturas();
-            if (asignaturasDisponibles.size() == 0) {
+            if (asignaturasDisponibles.isEmpty()) {
                 System.out.println("Aún no hay asignaturas registradas.");
                 System.out.println("Antes de insertar una matrícula, debe registrar alguna asignatura.");
                 return;
@@ -250,7 +248,7 @@ public class Vista {
 
             // Se permite al usuario elegir cuáles asignaturas desea añadir a la matrícula
             ArrayList<Asignatura> asignaturasSeleccionadas = Consola.elegirAsignaturasMatricula(asignaturasDisponibles);
-            if (asignaturasSeleccionadas.size() == 0) {
+            if (asignaturasSeleccionadas.isEmpty()) {
                 System.out.println("No se ha seleccionado ninguna asignatura. Matrícula cancelada.");
                 return;
             }
@@ -281,7 +279,7 @@ public class Vista {
 
                 // Se permite al usuario elegir cuáles asignaturas desea añadir a la matrícula
                 ArrayList<Asignatura> asignaturasSeleccionadas = Consola.elegirAsignaturasMatricula(asignaturasDisponibles);
-                if (asignaturasSeleccionadas.size() == 0) {
+                if (asignaturasSeleccionadas.isEmpty()) {
                     System.out.println("No se ha seleccionado ninguna asignatura. Matrícula cancelada.");
                     return;
                 }
@@ -324,7 +322,7 @@ public class Vista {
                     .sorted(Comparator.comparing(Matricula::getFechaMatriculacion)
                     .reversed(). // Orden descendente por fecha
                     thenComparing(m -> m.getAlumno().getNombre())) // Orden alfabético por nombre
-                    .collect(Collectors.toList());
+                    .toList();
 
             for (Matricula matricula : matriculasOrdenadasPorFecha) {
                 System.out.println(matricula);
@@ -346,7 +344,7 @@ public class Vista {
                     .sorted(Comparator.comparing(Matricula::getFechaMatriculacion)
                             .reversed() // Orden descendente por fecha
                             .thenComparing(m -> m.getAlumno().getNombre())) // Orden alfabético por nombre
-                    .collect(Collectors.toList());
+                    .toList();
 
             for (Matricula matricula : matriculasOrdenadasPorFecha) {
                 System.out.println(matricula);
@@ -365,7 +363,7 @@ public class Vista {
                     .sorted(Comparator.comparing(Matricula::getFechaMatriculacion)
                             .reversed() // Orden descendente por fecha
                             .thenComparing(m -> m.getAlumno().getNombre())) // Orden alfabético por nombre
-                    .collect(Collectors.toList());
+                    .toList();
 
             for (Matricula matricula : matriculasOrdenadasPorFecha) {
                 System.out.println(matricula);
@@ -385,7 +383,7 @@ public class Vista {
                     .sorted(Comparator.comparing(Matricula::getFechaMatriculacion)
                             .reversed() // Orden descendente por fecha
                             .thenComparing(m -> m.getAlumno().getNombre())) // Orden alfabético por nombre
-                    .collect(Collectors.toList());
+                    .toList();
 
             for (Matricula matricula : matriculasOrdenadasPorFecha) {
                 System.out.println(matricula);
